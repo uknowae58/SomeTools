@@ -1,35 +1,45 @@
-import tkinter as tk
-from tkinter import filedialog
-from Excelserstellung import excel
+from fpdf import FPDF
 
-def select_path():
+class PDF(FPDF):
+    def titles(self):
+        self.set_font('Arial', 'B', 16)
+        self.cell(0, 10, 'Distance totale parcourue en km', 0, 0, 'C')
+        self.ln(20)
 
-    path = filedialog.askdirectory()
-    if path:
-        print(' Pfad des ausgewählten Ordners lautet :', path)
-        excel(path)
+    def table(self, header, data):
+        self.set_font('Arial', 'B', 12)
+        w = [160]
+        for i in range(len(header)):
+            self.cell(w[i], 7, header[i], 1, 0, 'C')
+        self.ln()
+        self.set_font('Arial', '', 12)
+        fill = False
+        for row in data:
+            self.set_fill_color(200, 200, 200)
+            self.cell(w[0], 6, row[0], 'LR', fill=fill)
+            self.ln()
+            fill = not fill
+            for sub_row in row[1]:
+                self.cell(80, 6, sub_row[0], 'LR', fill=fill)
+                self.cell(80, 6, sub_row[1], 'LR', fill=fill)
+                self.ln()
+                fill = not fill
+        self.cell(sum(w), 0, '', 'T')
 
-def select_file():
+pdf = PDF()
+pdf.add_page()
+pdf.titles()
 
-    path = filedialog.askopenfilename()
-    if path:
-        print(' Pfad des ausgewählten Ordners lautet :', path)
-
-
-def get_input_value():
-    user_input = input_field.get()
-    excel(user_input)
-    print(" Pfad des ausgewählten Ordners lautet :", user_input)
-
-window = tk.Tk()
-input_field = tk.Entry(window)
-input_field.pack()
-window.title("graphisches interface")
-button = tk.Button(window, text = "Bestätigen Sie!", command=select_path)
-input_button = tk.Button(window, text="Récupérer la valeur", command=get_input_value)
-inputfile_button = tk.Button(window, text="Récupérer un fichier", command=select_file)
-input_button.pack()
-button.pack()
-inputfile_button.pack()
-window.mainloop()
-
+header = ['DISTANCES']
+data = [['Voyages', [['Voyage 1', 'Visite 1'],
+                     ['Voyage 2', 'Visite 2'],
+                     ['Voyage 3', 'Visite 3'],
+                     ['Voyage 4', 'Visite 4'],
+                     ['Voyage 5', 'Visite 5']]],
+        ['ICS - Visite en Plantations', [['Visite 1', 'Distance 1'],
+                                         ['Visite 2', 'Distance 2'],
+                                         ['Visite 3', 'Distance 3'],
+                                         ['Visite 4', 'Distance 4'],
+                                         ['Visite 5', 'Distance 5']]]]
+pdf.table(header, data)
+pdf.output('table.pdf', 'F')
