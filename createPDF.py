@@ -38,7 +38,7 @@ pdf.cell(0, 10, txt="Date: 14/08/2023", ln=6, align="R") # Créer une cellule sa
 # Créer une table avec les articles, les prix et les totaux
 pdf.set_font("Arial", size=10)
 pdf.ln(20) # Sauter une ligne
-header = ["Article", "Prix unité HT", "Total HT"]
+header = ["Article"]
 data = [["Produit A", "1000.00", "2000.00"],
         ["Produit B", "500.00", "1500.00"],
         ["Produit C", "300.00", "900.00"],
